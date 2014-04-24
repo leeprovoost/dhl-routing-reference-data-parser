@@ -8,7 +8,7 @@ Status: ALPHA. NOT USABLE YET.
 
 ## country.txt and countrypc.txt
 
-Run: cat country.txt | node parser
+Run: `cat country.txt | node parser`
 
 ## ESDv6.txt
 
