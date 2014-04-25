@@ -6,9 +6,20 @@ Download the zip file, extract the three files (country.txt, countrypc.txt and E
 
 Status: ALPHA. NOT USABLE YET.
 
+## prerequisites
+
+Ensure you have Node.js and npm installed (I use Homebrew, see [Setting up Node.js and npm on Mac OSX](http://shapeshed.com/setting-up-nodejs-and-npm-on-mac-osx/)
+
+Install following npm packages:
+```
+npm install csv-streamify
+npm install JSONStream
+npm install lodash
+```
+
 ## country.txt
 
-Run: `cat country.txt | node parser`
+TODO
 
 ## countrypc.txt
 
