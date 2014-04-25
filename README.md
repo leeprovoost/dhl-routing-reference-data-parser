@@ -20,5 +20,5 @@ TODO
 
 ## TODO
 
-See [issues page](https://github.com/leeprovoost/dhl-routing-reference-data-to-json/issues).
+See [issues page](https://github.com/leeprovoost/dhl-routing-reference-data-to-json/issues)
 
