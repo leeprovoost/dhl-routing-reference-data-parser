@@ -8,7 +8,7 @@ Status: ALPHA. NOT USABLE YET.
 
 ## prerequisites
 
-Ensure you have Node.js and npm installed (I use Homebrew, see [Setting up Node.js and npm on Mac OSX](http://shapeshed.com/setting-up-nodejs-and-npm-on-mac-osx/)
+Ensure you have Node.js and npm installed (I use Homebrew, see [Setting up Node.js and npm on Mac OSX](http://shapeshed.com/setting-up-nodejs-and-npm-on-mac-osx/)).
 
 Install following npm packages:
 ```
