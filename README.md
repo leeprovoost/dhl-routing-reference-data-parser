@@ -6,10 +6,19 @@ Download the zip file, extract the three files (country.txt, countrypc.txt and E
 
 Status: ALPHA. NOT USABLE YET.
 
-## country.txt and countrypc.txt
+## country.txt
 
 Run: `cat country.txt | node parser`
+
+## countrypc.txt
+
+TODO
 
 ## ESDv6.txt
 
 TODO
+
+## TODO
+
+See [issues page](https://github.com/leeprovoost/dhl-routing-reference-data-to-json/issues).
+
