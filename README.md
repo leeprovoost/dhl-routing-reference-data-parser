@@ -15,6 +15,7 @@ Install following npm packages:
 npm install csv-streamify
 npm install JSONStream
 npm install lodash
+npm install mongojs
 ```
 
 ## country.txt
