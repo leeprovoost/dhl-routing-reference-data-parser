@@ -1,13 +1,16 @@
-// This script takes the DHL country.txt file, only retains the used columns and spits out a JSON file
+// This script takes the DHL country.txt file, only retains the used columns and then 
+// stores the JSON document in MongoDB
 // See developer documentation here: http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html
+
+// MongoDB configuration
+var databaseUrl = "test"; // "username:password@example.com/mydb"
+var collections = ["test_country"]
+var db = require("mongojs").connect(databaseUrl, collections);
 
 var Transform = require('stream').Transform
   	, csv = require('csv-streamify')
   	, JSONStream = require('JSONStream')
-  	, fs = require('fs')
   	, _ = require('lodash');
-
-var fstream = fs.createReadStream('source/country.txt');
 
 // see parser options defined here: https://github.com/klaemo/csv-stream
 var csvToJson = csv({objectMode: true, delimiter: '|' });
@@ -17,7 +20,6 @@ parser._transform = function(data, encoding, done) {
   	this.push(this._parseRow(data));
   	done();
 };
-
 // Parse a data row into an object
 parser._parseRow = function(row) {
 	// convert Postcode Flag N/Y to booleans
@@ -25,23 +27,46 @@ parser._parseRow = function(row) {
 	if (row[10] == "Y") {
 		postcode_flag = true;
 	}
-	// TODO filter out some dummy entries
-	//if (row[0]=="XX" || row[0]=="XL" || row[0]=="XA") {
-	//}
-
-	// filter the columns we are interested in, we're using single letter column names to save
-	// space in our MongoDB database
+	// filter the columns we are interested in, we're using single letter column 
+	// names to save space in our MongoDB database
 	// a: Country Code, b: Country Name, c: Currency Code, d: Use Postcode Flag
 	var result = _.zipObject(
 		['a','b','c','d'], 
 		[row[0],row[1],row[8],postcode_flag]
 	);
-  	
   	return result;
 };
 
-fstream
+// store country document in MongoDB
+var writeToMongo = new Transform({objectMode: true});
+writeToMongo._transform = function(data, encoding, done) {
+  	this.push(this._parseRow(data));
+  	done();
+}
+writeToMongo._parseRow = function(row) {
+	db.test_country.insert(row, function(err, saved) {
+	  	if( err || !saved ) console.log(err);
+	});
+	return row;
+};
+
+process.stdin
 .pipe(csvToJson)
 .pipe(parser)
-.pipe(JSONStream.stringify(false))
-.pipe(process.stdout);
+.pipe(writeToMongo);
+
+/*
+process.stdin.on('end', function() {
+	// close mongodb connection
+	db.close();
+});
+*/
+
+
+
+
+
+
+
+
+

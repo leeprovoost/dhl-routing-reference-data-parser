@@ -1,6 +1,6 @@
 # dhl-routing-reference-data-to-json
 
-Convert DHL's Routing Reference Data (pipe-delimited text files) to JSON documents so you can import it into MongoDB. You can download the source files from the [DHL Developer Centre (Routing Reference Data)](http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html). This is for DHL customers that want to use the Routing Reference Data set for international postcode lookups to ensure that parcels get delivered correctly.
+Convert DHL's Routing Reference Data (pipe-delimited text files) to JSON documents and import into MongoDB. You can download the source files from the [DHL Developer Centre (Routing Reference Data)](http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html). This is for DHL customers that want to use the Routing Reference Data set for international postcode lookups to ensure that parcels get delivered correctly.
 
 Download the zip file, extract the three files (country.txt, countrypc.txt and ESDv6.txt).
 
@@ -19,8 +19,8 @@ npm install mongojs
 ```
 
 ## country.txt
-
-TODO
+- Change the MongoDB variables (database, collection) in parse-countries.js
+- Run in Terminal: `cat country.txt | node parse-countries.js`
 
 ## countrypc.txt
 
