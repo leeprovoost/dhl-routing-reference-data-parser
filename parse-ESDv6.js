@@ -2,14 +2,22 @@
 // stores the JSON document in MongoDB
 // See developer documentation here: http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html
 
+/*
+TODO:
+- remove doubles/triples
+- compare nr of postcodes here: http://www.goeievraag.nl/vraag/maatschappij/samenleving/verschillende-postcodes-inclusief-letters-nederland.118761
+- get new relic working
+*/
+
 "use strict";
+require('newrelic');
 
 // start timer
 var start = process.hrtime();
 
 // MongoDB configuration
 var db = require("mongojs").connect("test"); // "username:password@example.com/mydb"
-var mycollection = db.collection('intl_routing_api_country');
+var mycollection = db.collection('test_ESD_1');
 
 var Transform = require('stream').Transform,
     csv = require('csv-streamify'),
@@ -23,29 +31,52 @@ var csvToJson = csv({objectMode: true, delimiter: '|' });
 
 var parser = new Transform({objectMode: true});
 parser._transform = function (data, encoding, done) {
-    var result = this._parseRow(data);
-    var countryCode = result['a'];
-    if (countryCode !== "XX" && countryCode !== "XL" && countryCode !== "XA" ) {
-        this.push(result);
-        nrOfRecords++;
+    var countryCode = data[0];
+    var cityName = data[4];
+    var postcodeFrom = data[6];
+    var postcodeTo = data[7];
+    var result;
+    var from;
+    var to;
+    // get rid of first title record
+    if (countryCode == "NL") {
+        if (postcodeFrom != "" && postcodeTo != "") {
+            // postcode available
+            if (postcodeFrom === postcodeTo) {
+                // no postcode ranges so move on
+                result = _.zipObject(
+                    ['a', 'b', 'c'],
+                    [countryCode, cityName, String(postcodeFrom)]
+                );
+                this.push(result);
+                nrOfRecords++;
+            } else {
+                // postcode ranges
+                from = parseInt(postcodeFrom);
+                to = parseInt(postcodeTo);
+                if (postcodeFrom == "8041") console.log("From: " + from + ", To: " + to);
+                for (var i = from; i <= to; i++) {
+                    result = _.zipObject(
+                        ['a', 'b', 'c'],
+                        [countryCode, cityName, String(i)]
+                    );
+                    this.push(result);
+                    if (postcodeFrom == "8041") console.log("Nr: " + nrOfRecords + ", Counter: " + i);
+                    if (postcodeFrom == "8041") console.log(result);
+                    nrOfRecords++;
+                }
+            }
+        } else {
+            // No postcode, just city
+            result = _.zipObject(
+                ['a', 'b', 'c'],
+                [countryCode, cityName, ""]
+            );
+            this.push(result);
+            nrOfRecords++;
+        }
     }
     done();
-};
-// Parse a data row into an object
-parser._parseRow = function (row) {
-    // convert Postcode Flag N/Y to booleans
-    var postcode_flag = false;
-    if (row[10] === "Y") {
-        postcode_flag = true;
-    }
-    // filter the columns we are interested in, we're using single letter column 
-    // names to save space in our MongoDB database
-    // a: Country Code, b: Country Name, c: Currency Code, d: Use Postcode Flag
-    var result = _.zipObject(
-        ['a', 'b', 'c', 'd'],
-        [row[0], row[1], row[8], postcode_flag]
-    );
-    return result;
 };
 parser.on("end", function (done) {
     console.log("Nr of records processed: " + nrOfRecords);
@@ -58,6 +89,8 @@ writeToMongo._transform = function (data, encoding, done) {
         if (err || !saved) {
             console.log(err);
         } else {
+
+            // TODO this is not really working I think
             nrOfRecords--;
             // TODO: not the most elegant solution, need to find something better
             if (nrOfRecords === 0) {

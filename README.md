@@ -16,7 +16,17 @@ npm install csv-streamify
 npm install JSONStream
 npm install lodash
 npm install mongojs
+npm install underscore
 ```
+
+Make sure your MongoDB server is up and running: `mongod`.
+
+Ensure you have a database named `test` (or whatever you have called it).
+
+Ensure you have the following collections set up:
+- intl_routing_api_ESD
+- intl_routing_api_country
+- intl_routing_api_countrypc
 
 ## country.txt
 - Change the MongoDB variables (database, collection) in parse-country.js
