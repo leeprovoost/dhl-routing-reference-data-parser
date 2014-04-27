@@ -20,11 +20,12 @@ npm install mongojs
 
 ## country.txt
 - Change the MongoDB variables (database, collection) in parse-countries.js
-- Run in Terminal: `cat country.txt | node parse-countries.js`
+- Run in Terminal: `cat country.txt | node parse-country.js`
 
 ## countrypc.txt
 
-TODO
+- Change the MongoDB variables (database, collection) in parse-countries.js
+- Run in Terminal: `cat countrypc.txt | node parse-countrypc.js`
 
 ## ESDv6.txt
 
