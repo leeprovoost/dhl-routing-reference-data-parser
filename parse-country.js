@@ -2,6 +2,8 @@
 // stores the JSON document in MongoDB
 // See developer documentation here: http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html
 
+// TODO: rewrite, generate first json document, then just import it with mongoimport
+
 "use strict";
 
 // start timer
