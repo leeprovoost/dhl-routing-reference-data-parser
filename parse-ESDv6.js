@@ -4,27 +4,22 @@
 
 /*
 TODO:
-- remove doubles/triples
-- compare nr of postcodes here: http://www.goeievraag.nl/vraag/maatschappij/samenleving/verschillende-postcodes-inclusief-letters-nederland.118761
 - get new relic working
 */
 
 "use strict";
-require('newrelic');
 
 // start timer
 var start = process.hrtime();
-
-// MongoDB configuration
-var db = require("mongojs").connect("test"); // "username:password@example.com/mydb"
-var mycollection = db.collection('test_ESD_1');
 
 var Transform = require('stream').Transform,
     csv = require('csv-streamify'),
     JSONStream = require('JSONStream'),
     _ = require('lodash');
 
-var nrOfRecords = 0;    
+var nrOfRecords = 0;   
+var nrOfReducedRecords = 0; 
+var cityArray = [];
 
 // see parser options defined here: https://github.com/klaemo/csv-stream
 var csvToJson = csv({objectMode: true, delimiter: '|' });
@@ -35,59 +30,62 @@ parser._transform = function (data, encoding, done) {
     var cityName = data[4];
     var postcodeFrom = data[6];
     var postcodeTo = data[7];
-    var result;
     var from;
     var to;
+    var cityArray; // intermediate object for storing record
     // get rid of first title record
     if (countryCode == "NL") {
         if (postcodeFrom != "" && postcodeTo != "") {
             // postcode available
             if (postcodeFrom === postcodeTo) {
                 // no postcode ranges so move on
-                result = _.zipObject(
-                    ['a', 'b', 'c'],
-                    [countryCode, cityName, String(postcodeFrom)]
-                );
-                this.push(result);
+                cityArray = [countryCode, cityName, String(postcodeFrom)];
+                this.push(_.zipObject(['a', 'b', 'c'], cityArray));
                 nrOfRecords++;
             } else {
-                // postcode ranges
+                // unpack postcode ranges
                 from = parseInt(postcodeFrom);
                 to = parseInt(postcodeTo);
-                if (postcodeFrom == "8041") console.log("From: " + from + ", To: " + to);
                 for (var i = from; i <= to; i++) {
-                    result = _.zipObject(
-                        ['a', 'b', 'c'],
-                        [countryCode, cityName, String(i)]
-                    );
-                    this.push(result);
-                    if (postcodeFrom == "8041") console.log("Nr: " + nrOfRecords + ", Counter: " + i);
-                    if (postcodeFrom == "8041") console.log(result);
+                    cityArray = [countryCode, cityName, String(i)];
+                    this.push(_.zipObject(['a', 'b', 'c'], cityArray));
                     nrOfRecords++;
                 }
             }
         } else {
             // No postcode, just city
-            result = _.zipObject(
-                ['a', 'b', 'c'],
-                [countryCode, cityName, ""]
-            );
-            this.push(result);
+            cityArray = [countryCode, cityName, ""];
+            this.push(_.zipObject(['a', 'b', 'c'], cityArray));
             nrOfRecords++;
         }
+
     }
     done();
 };
 parser.on("end", function (done) {
-    console.log("Nr of records processed: " + nrOfRecords);
+    console.log("\nNr of records processed: " + nrOfRecords);
+    console.log("Nr of final records: " + nrOfReducedRecords);
     var precision = 3; // 3 decimal places
     var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
     console.log("Processing time: " + process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
 });
 
+var reducer = new Transform({objectMode: true});
+reducer._transform = function (data, encoding, done) {
+    var record = JSON.stringify(data);
+    if (cityArray.indexOf(record) === -1) {
+        cityArray.push(record);
+        nrOfReducedRecords++;
+        this.push(data);
+    } 
+    done();
+};
+
 process.stdin
 .pipe(csvToJson)
 .pipe(parser)
+.pipe(reducer)
+.pipe(JSONStream.stringify(false))
 .pipe(process.stdout);
 
 
