@@ -80,27 +80,6 @@ parser._transform = function (data, encoding, done) {
 };
 parser.on("end", function (done) {
     console.log("Nr of records processed: " + nrOfRecords);
-});
-
-// store country document in MongoDB
-var writeToMongo = new Transform({objectMode: true});
-writeToMongo._transform = function (data, encoding, done) {
-    mycollection.insert(data, function (err, saved) {
-        if (err || !saved) {
-            console.log(err);
-        } else {
-
-            // TODO this is not really working I think
-            nrOfRecords--;
-            // TODO: not the most elegant solution, need to find something better
-            if (nrOfRecords === 0) {
-                db.close();
-            }
-        }
-    });
-    done();
-};
-writeToMongo.on("finish", function (done) {
     var precision = 3; // 3 decimal places
     var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
     console.log("Processing time: " + process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
@@ -109,7 +88,7 @@ writeToMongo.on("finish", function (done) {
 process.stdin
 .pipe(csvToJson)
 .pipe(parser)
-.pipe(writeToMongo);
+.pipe(process.stdout);
 
 
 
