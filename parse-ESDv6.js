@@ -1,16 +1,6 @@
-// This script takes the DHL country.txt file, only retains the used columns and then 
-// stores the JSON document in MongoDB
+// This script takes the DHL ESDv6.txt file, only retains the used columns and then 
+// stores the JSON documents in a new text file
 // See developer documentation here: http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html
-
-/*
-TODO:
-- memory analytics
-- look into suburb thingy?
-- dump to multiple 16 MB files
-- sorting: indexes
-- add country processing kessage
-- speed up, loop probably not correct
-*/
 
 "use strict";
 
