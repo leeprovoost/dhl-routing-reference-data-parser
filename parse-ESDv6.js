@@ -4,7 +4,12 @@
 
 /*
 TODO:
-- get new relic working
+- memory analytics
+- look into suburb thingy?
+- dump to multiple 16 MB files
+- sorting: indexes
+- add country processing kessage
+- speed up, loop probably not correct
 */
 
 "use strict";
@@ -33,32 +38,28 @@ parser._transform = function (data, encoding, done) {
     var from;
     var to;
     var cityArray; // intermediate object for storing record
-    // get rid of first title record
-    if (countryCode == "NL") {
-        if (postcodeFrom != "" && postcodeTo != "") {
-            // postcode available
-            if (postcodeFrom === postcodeTo) {
-                // no postcode ranges so move on
-                cityArray = [countryCode, cityName, String(postcodeFrom)];
-                this.push(_.zipObject(['a', 'b', 'c'], cityArray));
-                nrOfRecords++;
-            } else {
-                // unpack postcode ranges
-                from = parseInt(postcodeFrom);
-                to = parseInt(postcodeTo);
-                for (var i = from; i <= to; i++) {
-                    cityArray = [countryCode, cityName, String(i)];
-                    this.push(_.zipObject(['a', 'b', 'c'], cityArray));
-                    nrOfRecords++;
-                }
-            }
-        } else {
-            // No postcode, just city
-            cityArray = [countryCode, cityName, ""];
+    if (postcodeFrom != "" && postcodeTo != "") {
+        // postcode available
+        if (postcodeFrom === postcodeTo) {
+            // no postcode ranges so move on
+            cityArray = [countryCode, cityName, String(postcodeFrom)];
             this.push(_.zipObject(['a', 'b', 'c'], cityArray));
             nrOfRecords++;
+        } else {
+            // unpack postcode ranges
+            from = parseInt(postcodeFrom);
+            to = parseInt(postcodeTo);
+            for (var i = from; i <= to; i++) {
+                cityArray = [countryCode, cityName, String(i)];
+                this.push(_.zipObject(['a', 'b', 'c'], cityArray));
+                nrOfRecords++;
+            }
         }
-
+    } else {
+        // No postcode, just city
+        cityArray = [countryCode, cityName, ""];
+        this.push(_.zipObject(['a', 'b', 'c'], cityArray));
+        nrOfRecords++;
     }
     done();
 };
@@ -73,7 +74,7 @@ parser.on("end", function (done) {
 var reducer = new Transform({objectMode: true});
 reducer._transform = function (data, encoding, done) {
     var record = JSON.stringify(data);
-    if (cityArray.indexOf(record) === -1) {
+    if (cityArray.indexOf(record) === -1 && data["a"] !== "Country Code") {
         cityArray.push(record);
         nrOfReducedRecords++;
         this.push(data);

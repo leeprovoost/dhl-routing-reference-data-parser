@@ -15,8 +15,6 @@ Install following npm packages:
 npm install csv-streamify
 npm install JSONStream
 npm install lodash
-npm install mongojs
-npm install underscore
 ```
 
 Make sure your MongoDB server is up and running: `mongod`.
@@ -29,17 +27,25 @@ Ensure you have the following collections set up:
 - intl_routing_api_countrypc
 
 ## country.txt
-- Change the MongoDB variables (database, collection) in parse-country.js
-- Run in Terminal: `cat country.txt | node parse-country.js`
+
+TODO
 
 ## countrypc.txt
 
-- Change the MongoDB variables (database, collection) in parse-countrypc.js
-- Run in Terminal: `cat countrypc.txt | node parse-countrypc.js`
+TODO
 
 ## ESDv6.txt
 
-TODO
+The `parse-ESDv6.js` script reads the DHL text file line by line and applies the following transformations:
+- Remove the fields that we are not interested in
+- Deduplicate records
+- Expand postcode ranges: looks at postcode from and postcode to and creates individual records for each postcode in the range
+- Ensures that all postcodes are treated as Strings instead of mix String and Int32
+
+Step 1 Run convertor: `cat ESDv6.txt | node parse-ESDv6.js > ESD-output.txt` (This took 20 hours on my Macbook Pro Retina, I need to work on making the script faster. The result was a 131MB file with roughly 3.25 million records.)
+Step 2 Split file in smaller chunks so that MongoDB can import them: `split -l 350000 ESD-output.txt` (this splits the large file into small 13/14MB files with each 350,000 records).
+Step 3 Clean up last file: open up the last text file and remove the last few lines, this is because the parser prints some statistics. I will remove this in the next release.
+Step 4 Import into MongoDB: for each file, run the following command `mongoimport --db test --collection intl_routing_api_ESD --fields a,b,c --file xaa --jsonArray`
 
 ## TODO
 

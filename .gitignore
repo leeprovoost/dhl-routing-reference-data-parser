@@ -27,3 +27,5 @@ node_modules
 # source data files
 source
 
+# output data files
+output
