@@ -1,5 +1,5 @@
 // This script takes the DHL ESDv6.txt file, only retains the used columns and then
-// stores the JSON documents in a new text file
+// outputs JSON documents
 // See developer documentation here: http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html
 
 "use strict";

@@ -23,15 +23,21 @@ Ensure you have the following collections set up:
 
 ## country.txt
 
-TODO
+The `parse-country.js` script reads the DHL text file `country.txt` line by line and applies the following transformations:
+- Remove unused columns and only retains country code, country name, currency and postcode flag
+- Convert postcode field to an actual JSON Boolean value
+- Remove a couple of records that aren't actual countries
 
+Step 1: Run converter script `cat country.txt | node parse-country.js > country-output.txt`.
+
+Step 2: Import into MongoDB, run the following command `mongoimport --db test --collection country-test --fields a,b,c,d --file country-output.txt --jsonArray`
 ## countrypc.txt
 
 TODO
 
 ## ESDv6.txt
 
-The `parse-ESDv6.js` script reads the DHL text file line by line and applies the following transformations:
+The `parse-ESDv6.js` script reads the DHL text file `ESDv6.txt` line by line and applies the following transformations:
 - Remove the fields that we are not interested in
 - Deduplicate records
 - Expand postcode ranges: looks at postcode from and postcode to and creates individual records for each postcode in the range
