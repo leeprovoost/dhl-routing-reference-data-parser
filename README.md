@@ -30,10 +30,14 @@ The `parse-country.js` script reads the DHL text file `country.txt` line by line
 
 Step 1: Run converter script `cat country.txt | node parse-country.js > country-output.txt`.
 
-Step 2: Import into MongoDB, run the following command `mongoimport --db test --collection country-test --fields a,b,c,d --file country-output.txt --jsonArray`
+Step 2: Import into MongoDB, run the following command `mongoimport --db test --collection intl_routing_api_country --fields a,b,c,d --file country-output.txt --jsonArray`
 ## countrypc.txt
 
-TODO
+The `parse-countrypc.js` script reads the DHL text file `countrypc.txt` line by line and turn them into JSON documents.
+
+Step 1: Run converter script `cat countrypc.txt | node parse-countrypc.js > countrypc-output.txt`.
+
+Step 2: Import into MongoDB, run the following command `mongoimport --db test --collection intl_routing_api_countrypc --fields a,b,c --file countrypc-output.txt --jsonArray`
 
 ## ESDv6.txt
 
