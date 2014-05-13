@@ -1,4 +1,4 @@
-// This script takes the DHL ESDv6.txt file, only retains the used columns and then 
+// This script takes the DHL ESDv6.txt file, only retains the used columns and then
 // stores the JSON documents in a new text file
 // See developer documentation here: http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html
 
@@ -12,8 +12,8 @@ var Transform = require('stream').Transform,
     JSONStream = require('JSONStream'),
     _ = require('lodash');
 
-var nrOfRecords = 0;   
-var nrOfReducedRecords = 0; 
+var nrOfRecords = 0;
+var nrOfReducedRecords = 0;
 var cityArray = [];
 
 // see parser options defined here: https://github.com/klaemo/csv-stream
@@ -68,7 +68,7 @@ reducer._transform = function (data, encoding, done) {
         cityArray.push(record);
         nrOfReducedRecords++;
         this.push(data);
-    } 
+    }
     done();
 };
 
@@ -78,12 +78,3 @@ process.stdin
 .pipe(reducer)
 .pipe(JSONStream.stringify(false))
 .pipe(process.stdout);
-
-
-
-
-
-
-
-
-
