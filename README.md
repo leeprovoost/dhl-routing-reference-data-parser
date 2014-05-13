@@ -10,12 +10,7 @@ Status: ALPHA.
 
 Ensure you have Node.js and npm installed (I use Homebrew, see [Setting up Node.js and npm on Mac OSX](http://shapeshed.com/setting-up-nodejs-and-npm-on-mac-osx/)).
 
-Install following npm packages:
-```
-npm install csv-streamify
-npm install JSONStream
-npm install lodash
-```
+Install the npm packages (there is a package.json file in the app root): `npm install`.
 
 Make sure your MongoDB server is up and running: `mongod`.
 
