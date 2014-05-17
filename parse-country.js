@@ -7,6 +7,11 @@
 // start timer
 var start = process.hrtime();
 
+require('nodetime').profile({
+    accountKey: '2ad839099ba24018432add80e8e5394ed98cdeb8', 
+    appName: 'Country Parser'
+  });
+
 var Transform = require('stream').Transform,
     csv = require('csv-streamify'),
     JSONStream = require('JSONStream'),
@@ -45,12 +50,12 @@ parser._parseRow = function (row) {
 };
 parser.on("end", function (done) {
     // Uncomment below if you are interested in debugging output
-    /*
+    
     console.log("\nNr of records processed: " + nrOfRecords);
     var precision = 3; // 3 decimal places
     var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
     console.log("Processing time: " + process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
-    */
+    
 });
 
 process.stdin

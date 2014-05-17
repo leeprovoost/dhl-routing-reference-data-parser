@@ -10,21 +10,23 @@ var start = process.hrtime();
 var Transform = require('stream').Transform,
     csv = require('csv-streamify'),
     JSONStream = require('JSONStream'),
+    fs = require('fs'),
     _ = require('lodash');
 
 var nrOfRecords = 0;
-var nrOfReducedRecords = 0;
 var cityArray = [];
 
 // see parser options defined here: https://github.com/klaemo/csv-stream
+var fstream = fs.createReadStream('temp4.txt');
 var csvToJson = csv({objectMode: true, delimiter: '|' });
 
 var parser = new Transform({objectMode: true});
 parser._transform = function (data, encoding, done) {
     var countryCode = data[0];
-    var cityName = data[4];
-    var postcodeFrom = data[6];
-    var postcodeTo = data[7];
+    var cityName = data[1];
+    var suburbName = data[2];
+    var postcodeFrom = data[3];
+    var postcodeTo = data[4];
     var from;
     var to;
     var cityArray; // intermediate object for storing record
@@ -32,49 +34,36 @@ parser._transform = function (data, encoding, done) {
         // postcode available
         if (postcodeFrom === postcodeTo) {
             // no postcode ranges so move on
-            cityArray = [countryCode, cityName, String(postcodeFrom)];
-            this.push(_.zipObject(['a', 'b', 'c'], cityArray));
+            cityArray = [countryCode, cityName, suburbName, String(postcodeFrom)];
+            this.push(_.zipObject(['a', 'b', 'c', 'd'], cityArray));
             nrOfRecords++;
         } else {
             // unpack postcode ranges
             from = parseInt(postcodeFrom);
             to = parseInt(postcodeTo);
             for (var i = from; i <= to; i++) {
-                cityArray = [countryCode, cityName, String(i)];
-                this.push(_.zipObject(['a', 'b', 'c'], cityArray));
+                cityArray = [countryCode, cityName, suburbName, String(i)];
+                this.push(_.zipObject(['a', 'b', 'c', 'd'], cityArray));
                 nrOfRecords++;
             }
         }
     } else {
         // No postcode, just city
-        cityArray = [countryCode, cityName, ""];
-        this.push(_.zipObject(['a', 'b', 'c'], cityArray));
+        cityArray = [countryCode, cityName, suburbName, ""];
+        this.push(_.zipObject(['a', 'b', 'c', 'd'], cityArray));
         nrOfRecords++;
     }
     done();
 };
 parser.on("end", function (done) {
     console.log("\nNr of records processed: " + nrOfRecords);
-    console.log("Nr of final records: " + nrOfReducedRecords);
     var precision = 3; // 3 decimal places
     var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
     console.log("Processing time: " + process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
 });
 
-var reducer = new Transform({objectMode: true});
-reducer._transform = function (data, encoding, done) {
-    var record = JSON.stringify(data);
-    if (cityArray.indexOf(record) === -1 && data["a"] !== "Country Code") {
-        cityArray.push(record);
-        nrOfReducedRecords++;
-        this.push(data);
-    }
-    done();
-};
-
-process.stdin
+fstream
 .pipe(csvToJson)
 .pipe(parser)
-.pipe(reducer)
 .pipe(JSONStream.stringify(false))
 .pipe(process.stdout);

@@ -29,3 +29,6 @@ source
 
 # output data files
 output
+
+# performance profiling configuration file
+strongloop.json
