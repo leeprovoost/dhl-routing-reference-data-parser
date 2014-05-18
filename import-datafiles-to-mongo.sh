@@ -11,6 +11,7 @@ mongoimport --db test --collection intl_postcode_api_ESD --fields a,b,c,d --file
 mongoimport --db test --collection intl_postcode_api_ESD --fields a,b,c,d --file output/xah --jsonArray
 mongoimport --db test --collection intl_postcode_api_ESD --fields a,b,c,d --file output/xai --jsonArray
 mongoimport --db test --collection intl_postcode_api_ESD --fields a,b,c,d --file output/xaj --jsonArray
+mongoimport --db test --collection intl_postcode_api_ESD --fields a,b,c,d --file output/xak --jsonArray
 
 echo Step 2 of 3: Uploading country file to MongoDB...
 mongoimport --db test --collection intl_postcode_api_country --fields a,b,c,d --file output/country-output.txt --jsonArray

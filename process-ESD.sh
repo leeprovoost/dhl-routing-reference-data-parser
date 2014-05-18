@@ -15,7 +15,7 @@ echo Step 4 of 6: Run the node script to expand the postcode ranges
 cat temp3.txt | node node-scripts/parse-ESDv6.js > temp4.txt
 
 echo Step 5 of 6: Cut up the JSON document in smaller files so that we can import them using mongoimport...
-split -l 350000 temp4.txt
+split -l 300000 temp4.txt
 mkdir output
 mv xa* output
 
