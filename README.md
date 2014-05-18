@@ -21,6 +21,8 @@ Ensure you have the following collections set up:
 - intl_postcode_api_country
 - intl_postcode_api_countrypc
 
+Ensure that the four shell scripts have execution rights.
+
 ## country.txt
 
 The `process-countries.sh` script reads the DHL text file `source/country.txt`  and applies the following transformations:
