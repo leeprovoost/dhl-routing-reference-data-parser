@@ -10,14 +10,12 @@ var start = process.hrtime();
 var Transform = require('stream').Transform,
     csv = require('csv-streamify'),
     JSONStream = require('JSONStream'),
-    fs = require('fs'),
     _ = require('lodash');
 
 var nrOfRecords = 0;
 var cityArray = [];
 
 // see parser options defined here: https://github.com/klaemo/csv-stream
-var fstream = fs.createReadStream('temp4.txt');
 var csvToJson = csv({objectMode: true, delimiter: '|' });
 
 var parser = new Transform({objectMode: true});
@@ -56,13 +54,16 @@ parser._transform = function (data, encoding, done) {
     done();
 };
 parser.on("end", function (done) {
+    // Uncomment below if you want to see some statistics
+    /*
     console.log("\nNr of records processed: " + nrOfRecords);
     var precision = 3; // 3 decimal places
     var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
     console.log("Processing time: " + process.hrtime(start)[0] + " s, " + elapsed.toFixed(precision) + " ms"); // print message + time
+    */
 });
 
-fstream
+process.stdin
 .pipe(csvToJson)
 .pipe(parser)
 .pipe(JSONStream.stringify(false))
