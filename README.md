@@ -16,7 +16,7 @@ Make sure your MongoDB server is up and running: `mongod`.
 
 Ensure you have a database named `test`. If you are using a different database name, change it in the `import-datafiles-to-mongo.sh` script.
 
-Ensure you have the following collections set up:
+The script will create the following collections. Change the names in the `import-datafiles-to-mongo.sh` if you want to use other names:
 - intl_postcode_api_ESD
 - intl_postcode_api_country
 - intl_postcode_api_countrypc
