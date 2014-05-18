@@ -25,7 +25,9 @@ build/Release
 node_modules
 
 # source data files
-source
+country.txt
+countrypc.txt
+ESDv6.txt
 
 # output data files
 output

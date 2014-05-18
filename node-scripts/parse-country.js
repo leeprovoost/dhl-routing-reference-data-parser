@@ -7,11 +7,6 @@
 // start timer
 var start = process.hrtime();
 
-require('nodetime').profile({
-    accountKey: '2ad839099ba24018432add80e8e5394ed98cdeb8', 
-    appName: 'Country Parser'
-  });
-
 var Transform = require('stream').Transform,
     csv = require('csv-streamify'),
     JSONStream = require('JSONStream'),

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo Step 1 of 1: Processing country postcode data...
+cat source/countrpc.txt | node node-scripts/parse-countrypc.js > output/countrypc-output.txt
+
+echo Done...

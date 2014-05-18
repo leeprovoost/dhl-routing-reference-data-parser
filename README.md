@@ -2,9 +2,9 @@
 
 Convert DHL's Routing Reference Data (pipe-delimited text files) to JSON documents and import into MongoDB. You can download the source files from the [DHL Developer Centre (Routing Reference Data)](http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html). This is for DHL customers that want to use the Routing Reference Data set for international postcode lookups to ensure that parcels get delivered correctly.
 
-Download the zip file, extract the three files (country.txt, countrypc.txt and ESDv6.txt). Run the Node.js scripts as described below.
+Download the zip file, extract the three files (country.txt, countrypc.txt and ESDv6.txt) and move them to the "source" folder in your project. Follow then the instructions below.
 
-Status: ALPHA.
+Status: BETA
 
 ## prerequisites
 
@@ -14,46 +14,39 @@ Install the npm packages (there is a package.json file in the app root): `npm in
 
 Make sure your MongoDB server is up and running: `mongod`.
 
-Ensure you have a database named `test` (or whatever you have called it).
+Ensure you have a database named `test`. If you are using a different database name, change it in the `import-datafiles-to-mongo.sh` script.
 
 Ensure you have the following collections set up:
-- intl_routing_api_ESD
-- intl_routing_api_country
-- intl_routing_api_countrypc
+- intl_postcode_api_ESD
+- intl_postcode_api_country
+- intl_postcode_api_countrypc
 
 ## country.txt
 
-The `parse-country.js` script reads the DHL text file `country.txt` line by line and applies the following transformations:
+The `process-countries.sh` script reads the DHL text file `source/country.txt`  and applies the following transformations:
 - Remove unused columns and only retains country code, country name, currency and postcode flag
 - Convert postcode field to an actual JSON Boolean value
 - Remove a couple of records that aren't actual countries
 
-Step 1: Run converter script `cat country.txt | node parse-country.js > country-output.txt`.
+Run the script `./process-countries.sh`. It assumes that your `country.txt` file is in the `source` directory and all the output files will be placed in the `output` directory.
 
-Step 2: Import into MongoDB, run the following command `mongoimport --db test --collection intl_routing_api_country --fields a,b,c,d --file country-output.txt --jsonArray`
 ## countrypc.txt
 
-The `parse-countrypc.js` script reads the DHL text file `countrypc.txt` line by line and turn them into JSON documents.
-
-Step 1: Run converter script `cat countrypc.txt | node parse-countrypc.js > countrypc-output.txt`.
-
-Step 2: Import into MongoDB, run the following command `mongoimport --db test --collection intl_routing_api_countrypc --fields a,b,c --file countrypc-output.txt --jsonArray`
+Run the script `./process-countrypcs.sh`. It assumes that your `countrypc.txt` file is in the `source` directory and all the output files will be placed in the `output` directory.
 
 ## ESDv6.txt
 
-The `parse-ESDv6.js` script reads the DHL text file `ESDv6.txt` line by line and applies the following transformations:
+The `process-ESD.sh` script reads the DHL text file `source/ESDv6.txt` and applies the following transformations:
 - Remove the fields that we are not interested in
 - Deduplicate records
 - Expand postcode ranges: looks at postcode from and postcode to and creates individual records for each postcode in the range
 - Ensures that all postcodes are treated as Strings instead of mix String and Int32
 
-Step 1: Run converter script `cat ESDv6.txt | node parse-ESDv6.js > ESD-output.txt` (This took 20 hours on my Macbook Pro Retina, I need to work on making the script faster. The result was a 131MB file with roughly 3.25 million records.)
+Run the script `./process-ESD.sh`. It assumes that your `ESDv6.txt` file is in the `source` directory and all the output files will be placed in the `output` directory.
 
-Step 2: Split file in smaller chunks so that MongoDB can import them: `split -l 350000 ESD-output.txt` (this splits the large file into small 13/14MB files with each 350,000 records).
+## Import into MongoDB
 
-Step 3: Clean up last file: open up the last text file and remove the last few lines, this is because the parser prints some statistics. I will remove this in the next release.
-
-Step 4: Import into MongoDB: for each file, run the following command `mongoimport --db test --collection intl_routing_api_ESD --fields a,b,c --file xaa --jsonArray`
+Run the script `./import-datafiles-to-mongo.sh`.
 
 ## TODO
 

@@ -1,13 +1,12 @@
 {
   "name": "dhl-routing-reference-data-to-mongodb",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Lee Provoost <lee.provoost@gmail.com>",
   "description": "Node.js scripts to convert DHL Routing Reference Data to JSON documents",
   "dependencies": {
     "csv-streamify": "1.0.x",
     "lodash": "2.4.x",
-    "JSONStream": "0.7.x",
-    "strong-agent": "~0.4.4"
+    "JSONStream": "0.7.x"
   },
   "license": "MIT",
   "engines": {
