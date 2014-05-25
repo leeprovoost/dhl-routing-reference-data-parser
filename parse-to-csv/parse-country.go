@@ -41,6 +41,10 @@ func main() {
 		} else if err != nil {
 			panic(err)
 		}
-		writer.Write([]string{record[0], record[1], record[8], record[10]})
+		postcode_flag := "False"
+		if record[10] == "Y" {
+			postcode_flag = "True"
+		}
+		writer.Write([]string{record[0], record[1], record[8], postcode_flag})
 	}
 }
