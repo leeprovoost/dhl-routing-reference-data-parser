@@ -8,11 +8,11 @@ Status: JSON is fully working, CSV is under development.
 
 ## Parse DHL data to CSV
 
-See details [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/parse-to-csv).
+See details [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/tree/master/parse-to-csv).
 
 ## Parse DHL data to JSON and import into MongoDB
 
-See details [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/parse-to-json).
+See details [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/tree/master/parse-to-json).
 
 ## TODO
 
