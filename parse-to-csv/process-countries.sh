@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo Step 1 of 1: Processing country postcode data...
+go run go-scripts/parse-country.go 
+
+echo Done...
