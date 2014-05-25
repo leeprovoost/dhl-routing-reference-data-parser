@@ -29,8 +29,15 @@ country.txt
 countrypc.txt
 ESDv6.txt
 
-# output data files
+# input and output data files
 output
+source
 
-# performance profiling configuration file
-strongloop.json
+# generated data files
+country.csv
+countrypc.csv
+ESDv6.csv
+
+# Exclude Intellij files
+parse-to-csv/.idea/
+parse-to-csv/parse-to-csv.iml
