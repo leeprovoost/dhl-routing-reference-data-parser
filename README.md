@@ -4,7 +4,7 @@ Parse DHL's Routing Reference Data (pipe-delimited text files) and convert to ei
 
 This is a hobby project of mine to play with new programming languages. The DHL data to JSON code is a combination of bash scripts and Node.js code. The DHL data to CSV code is a combination of bash scripts and Go code. I might get rid of the Node.js code and port everything to Go.
 
-## Parse DHL data to CSV
+## Parse DHL data to CSV and import into SQL database
 
 Status: Under development
 
