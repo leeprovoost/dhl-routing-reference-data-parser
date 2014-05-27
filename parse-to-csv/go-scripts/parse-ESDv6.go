@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"io"
 	"strconv"
-	"fmt"
 )
 
 const (
@@ -47,8 +46,6 @@ func main() {
 	// Create a lookup array
 	lookupArray := make(map[string]string)
 
-	// Hack: we need the record counter to fix record nr 636243 that has a character
-	// that we need to fix manually
 	recordCounter := 1
 
 	// Process CSV file line by line
@@ -74,12 +71,12 @@ func main() {
 			lookupArray[hashed] = hashed
 			if postcodeFrom == postcodeTo {
 				// Either there is no postcode, or there is a postcode but no postcode range
+				// Hack: we need the record counter to fix record nr 636243 that has a character
+				// that we need to fix manually
 				if recordCounter == 636243 {
-					writer.Write([]string{countryCode, cityName, "SAIDA", postcodeFrom})
-					fmt.Println("here we are: " + countryCode + cityName + suburbName + postcodeFrom)
-				} else {
-					writer.Write([]string{countryCode, cityName, suburbName, postcodeFrom})
+					suburbName = "SAIDA"
 				}
+				writer.Write([]string{countryCode, cityName, suburbName, postcodeFrom})
 			} else {
 				// Hack: There are two cases where there are postcode ranges but the postcode is not
 				// an integer. Just solve this manually for now.

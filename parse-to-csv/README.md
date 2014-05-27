@@ -1,6 +1,10 @@
 # Import DHL Routing Reference Data into an SQL database
 
-Convert DHL's Routing Reference Data (pipe-delimited text files) to CSV files and import into an SQL database (Postgres). You can download the source files from the [DHL Developer Centre (Routing Reference Data)](http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html). This is for DHL customers that want to use the Routing Reference Data set for international postcode lookups to ensure that parcels get delivered correctly.
+Convert DHL's Routing Reference Data (pipe-delimited text files) to CSV files and 
+import into an SQL database (Postgres). You can download the source files from the
+[DHL Developer Centre (Routing Reference Data)](http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html). 
+This is for DHL customers that want to use the Routing Reference Data set for 
+international postcode lookups to ensure that parcels get delivered correctly.
 
 ## prerequisites
 
