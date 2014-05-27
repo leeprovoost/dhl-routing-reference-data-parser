@@ -37,15 +37,8 @@ The only thing you need to do is to run the script `./run-conversion-scripts.sh`
 It assumes that your source data files are in the `source` directory and all the output files 
 will be placed in the `output` directory.
 
-## countrypc.txt
-
-Run the script `./process-countrypcs.sh`. It assumes that your `countrypc.txt` file is in the `source` directory and all the output files will be placed in the `output` directory.
-
-## ESDv6.txt
-
-TODO
-
 ## Import into Postgres
 
-TODO
+I need to write some import scripts for Postgres. There are already Postgres table creation
+scripts available [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/tree/master/parse-to-csv/sql-scripts).
 
