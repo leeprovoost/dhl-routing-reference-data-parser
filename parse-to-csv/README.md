@@ -16,7 +16,7 @@ Read more [here](http://golang.org/doc/install).
 - Ensure that the shell scripts have execution rights.
 - Make sure your Postgres server is up and running. (TODO: create Postgres database initialisation scripts)
 
-## Running the conversion scripts
+## Running the conversion script
 
 The `go-scripts/parse-country.go` script reads the DHL text file `source/country.txt` 
 and applies the following transformations:
