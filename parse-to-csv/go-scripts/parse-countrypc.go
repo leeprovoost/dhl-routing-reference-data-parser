@@ -1,13 +1,13 @@
 package main
 
 import (
-	"encoding/csv"
 	"io"
 	"os"
+	"encoding/csv"
 )
 
 const (
-	InputFile = "source/countrypc.txt"
+	InputFile  = "source/countrypc.txt"
 	OutputFile = "output/countrypc.csv"
 )
 

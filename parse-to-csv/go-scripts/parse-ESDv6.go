@@ -1,16 +1,16 @@
 package main
 
 import (
-	"encoding/csv"
-	"os"
-	"crypto/md5"
-	"encoding/hex"
 	"io"
+	"os"
 	"strconv"
+	"crypto/md5"
+	"encoding/csv"
+	"encoding/hex"
 )
 
 const (
-	InputFile = "source/ESDv6.txt"
+	InputFile  = "source/ESDv6.txt"
 	OutputFile = "output/ESDv6.csv"
 )
 
@@ -47,7 +47,6 @@ func main() {
 	lookupArray := make(map[string]string)
 
 	recordCounter := 1
-
 	// Process CSV file line by line
 	for {
 		recordCounter++
@@ -58,11 +57,11 @@ func main() {
 			panic(err)
 		}
 		var (
-			countryCode = record[0]
-			cityName = record[4]
-			suburbName = record[5]
+			countryCode  = record[0]
+			cityName     = record[4]
+			suburbName   = record[5]
 			postcodeFrom = record[6]
-			postcodeTo = record[7]
+			postcodeTo   = record[7]
 		)
 		// Create hash from record
 		hashed := GetMD5Hash(countryCode + cityName + suburbName + postcodeFrom + postcodeTo)
@@ -101,7 +100,7 @@ func main() {
 					if err != nil {
 						panic(err)
 					}
-					for i := from; i <= to ; i++ {
+					for i := from; i <= to; i++ {
 						writer.Write([]string{countryCode, cityName, suburbName, strconv.Itoa(i)})
 					}
 				}
@@ -125,4 +124,3 @@ func IsStringAnInteger(text string) bool {
 		return false
 	}
 }
-
