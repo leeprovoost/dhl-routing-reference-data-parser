@@ -6,13 +6,13 @@ This is a hobby project of mine to play with new programming languages. The DHL 
 
 ## Parse DHL data to CSV and import into SQL database
 
-Status: Under development
+Status: Fully functional, need to write tests.
 
 See details [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/tree/master/parse-to-csv).
 
 ## Parse DHL data to JSON and import into MongoDB
 
-Status: Fully working
+Status: Fully functional, need to rewrite it in Go (instead of Node.js)
 
 See details [here](https://github.com/leeprovoost/dhl-routing-reference-data-parser/tree/master/parse-to-json).
 
