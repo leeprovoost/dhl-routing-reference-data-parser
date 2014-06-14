@@ -25,6 +25,7 @@ countrypc.txt
 ESDv6.txt
 
 # generated data files
+output
 countries.csv
 countries.json
 countrypostcodes.csv
