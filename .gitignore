@@ -19,25 +19,14 @@ coverage
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
 
-# Dependency directory
-# Deployed apps should consider commenting this line out:
-# see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
-node_modules
-
 # source data files
 country.txt
 countrypc.txt
 ESDv6.txt
 
-# input and output data files
-output
-source
-
 # generated data files
-country.csv
-countrypc.csv
-ESDv6.csv
+output/*
 
 # Exclude Intellij files
-parse-to-csv/.idea/
-parse-to-csv/parse-to-csv.iml
+.idea/
+*.iml
