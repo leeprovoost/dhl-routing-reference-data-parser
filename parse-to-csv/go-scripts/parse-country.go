@@ -1,19 +1,28 @@
 package main
 
 import (
+	"encoding/csv"
+	"encoding/json"
 	"io"
 	"os"
-	"encoding/csv"
 )
 
 const (
-	InputFile  = "source/country.txt"
-	OutputFile = "output/country.csv"
+	InputFileTXT   = "source/country.txt"
+	OutputFileCSV  = "output/country.csv"
+	OutputFileJSON = "output/country.json"
 )
+
+type Country struct {
+	CountryCode  string `json:"cc"`
+	CountryName  string `json:"cn"`
+	Currency     string `json:"cu"`
+	PostcodeFlag string `json:"pf"`
+}
 
 func main() {
 	// File reader
-	inputFile, err := os.Open(InputFile)
+	inputFile, err := os.Open(InputFileTXT)
 	if err != nil {
 		panic(err)
 	}
@@ -21,19 +30,26 @@ func main() {
 	reader := csv.NewReader(inputFile)
 	reader.Comma = '|'
 
-	// File writer
-	outputFile, err := os.Create(OutputFile)
+	// Set up file writer for CSV
+	outputFileCSV, err := os.Create(OutputFileCSV)
 	if err != nil {
 		panic(err)
 	}
-	defer outputFile.Close()
-	writer := csv.NewWriter(outputFile)
-	defer writer.Flush()
+	defer outputFileCSV.Close()
+	csvWriter := csv.NewWriter(outputFileCSV)
+	defer csvWriter.Flush()
+
+	// Set up file writer for JSON
+	outputFileJSON, err := os.Create(OutputFileJSON)
+	if err != nil {
+		panic(err)
+	}
+	defer outputFileJSON.Close()
 
 	// Write CSV headers
-	writer.Write([]string{"country_code", "country_name", "currency", "postcode_flag"})
+	csvWriter.Write([]string{"country_code", "country_name", "currency", "postcode_flag"})
 
-	// Process CSV file line by line
+	// Process file line by line
 	for {
 		record, err := reader.Read()
 		if err == io.EOF {
@@ -41,10 +57,17 @@ func main() {
 		} else if err != nil {
 			panic(err)
 		}
-		postcode_flag := "False"
+		postcode_flag := "false"
 		if record[10] == "Y" {
-			postcode_flag = "True"
+			postcode_flag = "true"
 		}
-		writer.Write([]string{record[0], record[1], record[8], postcode_flag})
+		// Write CSV record to file
+		csvWriter.Write([]string{record[0], record[1], record[8], postcode_flag})
+		// Write JSON document to file
+		countryStruct := Country{record[0], record[1], record[8], postcode_flag}
+		jsonDocument, _ := json.Marshal(countryStruct)
+		outputFileJSON.WriteString(string(jsonDocument) + "\n")
 	}
 }
+
+
