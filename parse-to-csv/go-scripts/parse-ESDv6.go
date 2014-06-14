@@ -1,22 +1,31 @@
 package main
 
 import (
-	"io"
-	"os"
-	"strconv"
 	"crypto/md5"
 	"encoding/csv"
 	"encoding/hex"
+	"encoding/json"
+	"io"
+	"os"
+	"strconv"
 )
 
 const (
-	InputFile  = "source/ESDv6.txt"
-	OutputFile = "output/ESDv6.csv"
+	InputFileTXT   = "source/ESDv6.txt"
+	OutputFileCSV  = "output/ESDv6.csv"
+	OutputFileJSON = "output/ESDv6.json"
 )
+
+type ESD struct {
+	CountryCode string `json:"cc"`
+	CityName    string `json:"cn"`
+	SuburbName  string `json:"sn"`
+	Postcode    string `json:"pc"`
+}
 
 func main() {
 	// File reader
-	inputFile, err := os.Open(InputFile)
+	inputFile, err := os.Open(InputFileTXT)
 	if err != nil {
 		panic(err)
 	}
@@ -31,17 +40,24 @@ func main() {
 		panic(err)
 	}
 
-	// File writer
-	outputFile, err := os.Create(OutputFile)
+	// Set up file writer for CSV
+	outputFileCSV, err := os.Create(OutputFileCSV)
 	if err != nil {
 		panic(err)
 	}
-	defer outputFile.Close()
-	writer := csv.NewWriter(outputFile)
-	defer writer.Flush()
+	defer outputFileCSV.Close()
+	csvWriter := csv.NewWriter(outputFileCSV)
+	defer csvWriter.Flush()
+
+	// Set up file writer for JSON
+	outputFileJSON, err := os.Create(OutputFileJSON)
+	if err != nil {
+		panic(err)
+	}
+	defer outputFileJSON.Close()
 
 	// Write CSV headers
-	writer.Write([]string{"country_code", "city_name", "suburb_name", "postcode"})
+	csvWriter.Write([]string{"country_code", "city_name", "suburb_name", "postcode"})
 
 	// Create a lookup array
 	lookupArray := make(map[string]string)
@@ -75,17 +91,32 @@ func main() {
 				if recordCounter == 636243 {
 					suburbName = "SAIDA"
 				}
-				writer.Write([]string{countryCode, cityName, suburbName, postcodeFrom})
+				csvWriter.Write([]string{countryCode, cityName, suburbName, postcodeFrom})
+				esdStruct := ESD{countryCode, cityName, suburbName, postcodeFrom}
+				jsonDocument, _ := json.Marshal(esdStruct)
+				outputFileJSON.WriteString(string(jsonDocument) + "\n")
 			} else {
 				// Hack: There are two cases where there are postcode ranges but the postcode is not
 				// an integer. Just solve this manually for now.
 				if !IsStringAnInteger(postcodeFrom) || !IsStringAnInteger(postcodeTo) {
 					if countryCode == "BN" && postcodeFrom == "KA1131" {
-						writer.Write([]string{countryCode, cityName, suburbName, "KA1131"})
-						writer.Write([]string{countryCode, cityName, suburbName, "KA1132"})
+						csvWriter.Write([]string{countryCode, cityName, suburbName, "KA1131"})
+						esdStruct := ESD{countryCode, cityName, suburbName, "KA1131"}
+						jsonDocument, _ := json.Marshal(esdStruct)
+						outputFileJSON.WriteString(string(jsonDocument) + "\n")
+						csvWriter.Write([]string{countryCode, cityName, suburbName, "KA1132"})
+						esdStruct = ESD{countryCode, cityName, suburbName, "KA1132"}
+						jsonDocument, _ = json.Marshal(esdStruct)
+						outputFileJSON.WriteString(string(jsonDocument) + "\n")
 					} else if countryCode == "BN" && postcodeFrom == "KB3533" {
-						writer.Write([]string{countryCode, cityName, suburbName, "KB3533"})
-						writer.Write([]string{countryCode, cityName, suburbName, "KB3534"})
+						csvWriter.Write([]string{countryCode, cityName, suburbName, "KB3533"})
+						esdStruct := ESD{countryCode, cityName, suburbName, "KB3533"}
+						jsonDocument, _ := json.Marshal(esdStruct)
+						outputFileJSON.WriteString(string(jsonDocument) + "\n")
+						csvWriter.Write([]string{countryCode, cityName, suburbName, "KB3534"})
+						esdStruct = ESD{countryCode, cityName, suburbName, "KB3534"}
+						jsonDocument, _ = json.Marshal(esdStruct)
+						outputFileJSON.WriteString(string(jsonDocument) + "\n")
 					} else {
 						// Just in case we get some more cases in the future
 						panic("Detected an uncaught alphanumeric postcode range again!")
@@ -101,7 +132,10 @@ func main() {
 						panic(err)
 					}
 					for i := from; i <= to; i++ {
-						writer.Write([]string{countryCode, cityName, suburbName, strconv.Itoa(i)})
+						csvWriter.Write([]string{countryCode, cityName, suburbName, strconv.Itoa(i)})
+						esdStruct := ESD{countryCode, cityName, suburbName, strconv.Itoa(i)}
+						jsonDocument, _ := json.Marshal(esdStruct)
+						outputFileJSON.WriteString(string(jsonDocument) + "\n")
 					}
 				}
 			}
