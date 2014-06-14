@@ -9,8 +9,8 @@ import (
 
 const (
 	InputFileTXT   = "source/country.txt"
-	OutputFileCSV  = "output/country.csv"
-	OutputFileJSON = "output/country.json"
+	OutputFileCSV  = "output/countries.csv"
+	OutputFileJSON = "output/countries.json"
 )
 
 type Country struct {

@@ -1,19 +1,27 @@
 package main
 
 import (
+	"encoding/csv"
+	"encoding/json"
 	"io"
 	"os"
-	"encoding/csv"
 )
 
 const (
-	InputFile  = "source/countrypc.txt"
-	OutputFile = "output/countrypc.csv"
+	InputFileTXT   = "source/countrypc.txt"
+	OutputFileCSV  = "output/countrypcostcodes.csv"
+	OutputFileJSON = "output/countrypostcodes.json"
 )
+
+type CountryPostcode struct {
+	CountryCode       string `json:"cc"`
+	PostcodeFormat    string `json:"pf"`
+	SignificantDigits string `json:"sd"`
+}
 
 func main() {
 	// File reader
-	inputFile, err := os.Open(InputFile)
+	inputFile, err := os.Open(InputFileTXT)
 	if err != nil {
 		panic(err)
 	}
@@ -21,17 +29,24 @@ func main() {
 	reader := csv.NewReader(inputFile)
 	reader.Comma = '|'
 
-	// File writer
-	outputFile, err := os.Create(OutputFile)
+	// Set up file writer for CSV
+	outputFileCSV, err := os.Create(OutputFileCSV)
 	if err != nil {
 		panic(err)
 	}
-	defer outputFile.Close()
-	writer := csv.NewWriter(outputFile)
-	defer writer.Flush()
+	defer outputFileCSV.Close()
+	csvWriter := csv.NewWriter(outputFileCSV)
+	defer csvWriter.Flush()
+
+	// Set up file writer for JSON
+	outputFileJSON, err := os.Create(OutputFileJSON)
+	if err != nil {
+		panic(err)
+	}
+	defer outputFileJSON.Close()
 
 	// Write CSV headers
-	writer.Write([]string{"country_code", "postcode_format", "significant_digits"})
+	csvWriter.Write([]string{"country_code", "postcode_format", "significant_digits"})
 
 	// Process CSV file line by line
 	for {
@@ -41,6 +56,11 @@ func main() {
 		} else if err != nil {
 			panic(err)
 		}
-		writer.Write([]string{record[0], record[1], record[2]})
+		// Write CSV record to file
+		csvWriter.Write([]string{record[0], record[1], record[2]})
+		// Write JSON document to file
+		countryPostcodeStruct := CountryPostcode{record[0], record[1], record[2]}
+		jsonDocument, _ := json.Marshal(countryPostcodeStruct)
+		outputFileJSON.WriteString(string(jsonDocument) + "\n")
 	}
 }
