@@ -25,7 +25,13 @@ countrypc.txt
 ESDv6.txt
 
 # generated data files
-output/*
+countries.csv
+countries.json
+countrypostcodes.csv
+countrypostcodes.json
+ESDv6.csv
+ESDv6.json
+xa*
 
 # Exclude Intellij files
 .idea/
