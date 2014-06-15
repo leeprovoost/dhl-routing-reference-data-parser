@@ -2,7 +2,7 @@
 
 echo Step 1 of 4: Split large JSON document in smaller chunks so that mongoimport can handle them
 split -l 250000 output/ESDv6.json "ESDv6_small_"
-mv xa* output
+mv ESDv6_small_* output
 
 echo Step 2 of 4: Uploading ESD files to MongoDB...
 mongoimport --db test --collection intl_postcode_api_ESD --fields a,b,c,d --file output/ESDv6_small_aa --jsonArray
