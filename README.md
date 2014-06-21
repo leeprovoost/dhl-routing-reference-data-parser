@@ -6,6 +6,7 @@ This is a hobby project of mine to play with new programming languages (in this 
 
 ## Prerequisites
 
+- Have Go 1.2 installed (not tested yet against 1.3)
 - Download the zip file from the [DHL Developeer Centre]((http://www.dhl.co.uk/content/gb/en/express/resource_centre/integrated_shipping_solutions/developer_download_centre1.html)), extract the three files (country.txt, countrypc.txt and ESDv6.txt) and move them to the "source" folder in your project. 
 - Create an empty folder called output.
 - Ensure you have Go installed and GOPATH and GOROOT environment variables set up. Read more [here](http://golang.org/doc/install).
